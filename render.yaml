@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: taylor-frontend
+    env: docker
+    dockerfilePath: ./Dockerfile
+    autoDeploy: true
+    # Configuración de recursos
+    plan: free # Cambia a "standard" si necesitas mejor rendimiento
+    
+    # Configuración del puerto
+    envVars:
+      - key: PORT
+        value: 8080
+      - key: BACKEND_URL
+        value: https://api-discografia.onrender.com/api/albums
+
+    # Health check (opcional)
+    healthCheckPath: /

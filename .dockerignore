@@ -1,0 +1,17 @@
+target/
+.git/
+.gitignore
+.DS_Store
+*.md
+.mvn/
+mvnw
+mvnw.cmd
+.idea/
+*.iml
+.vscode/
+node_modules/
+*.log
+.classpath
+.project
+.settings/
+bin/
