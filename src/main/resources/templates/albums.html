@@ -296,7 +296,7 @@
         }
 
         body.dark-mode .carousel-title {
-            color: #ffffff;
+            color: #fde047;
         }
 
         .carousel-year {
@@ -306,7 +306,7 @@
         }
 
         body.dark-mode .carousel-year {
-            color: #e5e7eb;
+            color: #fbbf24;
         }
 
         .carousel-badge {
@@ -505,11 +505,19 @@
             }
         };
 
-        // Carrusel
+        // Carrusel con loop infinito
         const track = document.getElementById('carouselTrack');
         const container = document.getElementById('carouselContainer');
+        
+        // Duplicar items para efecto infinito
         const items = Array.from(track.querySelectorAll('.carousel-item'));
         const itemCount = items.length;
+        
+        // Clonar todos los items y añadirlos al final
+        items.forEach(item => {
+            const clone = item.cloneNode(true);
+            track.appendChild(clone);
+        });
 
         // Pausar cuando el mouse entra
         container.addEventListener('mouseenter', () => {
@@ -521,9 +529,13 @@
             track.classList.remove('paused');
         });
 
-        // Reiniciar animación suavemente al llegar al final
-        track.addEventListener('animationiteration', () => {
-            // La animación se repite automáticamente
+        // Loop infinito seamless
+        track.addEventListener('animationend', () => {
+            // Reiniciar la animación
+            track.style.animation = 'none';
+            setTimeout(() => {
+                track.style.animation = '';
+            }, 50);
         });
 
         // Inicializar al cargar la página
