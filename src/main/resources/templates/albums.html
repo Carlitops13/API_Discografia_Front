@@ -88,6 +88,74 @@
             z-index: 10;
         }
 
+        /* Responsive para tablets */
+        @media (max-width: 768px) {
+            .carousel-item {
+                flex: 0 0 220px;
+                min-width: 220px;
+                height: 330px;
+            }
+
+            .carousel-image {
+                height: 200px;
+            }
+
+            .carousel-content {
+                padding: 1rem;
+            }
+
+            .carousel-title {
+                font-size: 0.95rem;
+            }
+
+            .carousel-year {
+                font-size: 0.8rem;
+            }
+
+            .carousel-badge {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+
+        /* Responsive para teléfonos móviles */
+        @media (max-width: 480px) {
+            .carousel-item {
+                flex: 0 0 160px;
+                min-width: 160px;
+                height: 240px;
+            }
+
+            .carousel-image {
+                height: 140px;
+            }
+
+            .carousel-content {
+                padding: 0.8rem;
+            }
+
+            .carousel-title {
+                font-size: 0.85rem;
+                line-height: 1.2;
+            }
+
+            .carousel-year {
+                font-size: 0.7rem;
+                margin-top: 0.3rem;
+            }
+
+            .carousel-badge {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+                margin-top: 0.4rem;
+            }
+
+            .scroll-indicator {
+                font-size: 1rem;
+                margin-top: 2rem;
+            }
+        }
+
         .carousel-item-inner {
             width: 100%;
             height: 100%;
@@ -149,6 +217,36 @@
             width: fit-content;
         }
 
+        /* Botón de favorito */
+        .favorite-btn {
+            position: absolute;
+            top: 0.8rem;
+            right: 0.8rem;
+            background: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            z-index: 5;
+        }
+
+        .favorite-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .favorite-btn.liked {
+            color: #ec4899;
+            font-size: 1.8rem;
+        }
+
         /* Duplicado de carrusel para efecto infinito */
         .carousel-track::after {
             content: '';
@@ -171,26 +269,60 @@
                 transform: translateY(-10px);
             }
         }
+
+        /* Responsive para header */
+        @media (max-width: 768px) {
+            .sparkle::before,
+            .sparkle::after {
+                font-size: 1rem;
+            }
+
+            .sparkle::before {
+                left: -1.5rem;
+            }
+
+            .sparkle::after {
+                right: -1.5rem;
+            }
+
+            h1 {
+                font-size: 2.5rem !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sparkle::before,
+            .sparkle::after {
+                display: none;
+            }
+
+            h1 {
+                font-size: 1.8rem !important;
+            }
+        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
 
     <!-- Header -->
-    <div class="py-12 text-center">
-        <h1 class="sparkle text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-blue-400 mb-4">
+    <div class="py-12 md:py-12 sm:py-8 text-center px-4">
+        <h1 class="sparkle text-5xl md:text-6xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-500 to-blue-400 mb-4">
             The Eras Collection
         </h1>
-        <p class="text-gray-600 text-lg">Desplázate para descubrir todos los álbumes de Taylor Swift</p>
+        <p class="text-gray-600 text-lg md:text-lg sm:text-base">Una colección completa de los álbumes de Taylor Swift</p>
     </div>
 
     <!-- Carrusel -->
-    <div class="max-w-full mx-auto py-12 px-4">
+    <div class="max-w-full mx-auto py-12 md:py-8 sm:py-6 px-2 md:px-4">
         <div class="carousel-container" id="carouselContainer">
             <div class="carousel-track" id="carouselTrack">
                 <!-- Elementos del carrusel (se duplicarán con JavaScript) -->
                 <th:block th:each="album : ${listaAlbumes}">
                     <div class="carousel-item" th:data-name="${album.nombre}" th:data-genre="${album.genero}">
                         <div class="carousel-item-inner">
+                            <button class="favorite-btn" th:data-album-id="${album.id}" onclick="toggleFavorite(event)">
+                                🤍
+                            </button>
                             <img th:src="${album.imagenUrl}" 
                                  th:alt="${album.nombre}"
                                  class="carousel-image"
@@ -222,16 +354,56 @@
 
     <!-- Footer -->
     <div class="text-center py-8 mt-12 text-gray-600 border-t border-gray-200">
-        <p>💜 Made with love for Taylor Swift fans | 2026</p>
+        <p>💜 Made with love for Carlos Puente | 2026</p>
     </div>
 
     <script>
+        // Cargar favoritos al iniciar
+        const loadFavorites = () => {
+            const favorites = JSON.parse(localStorage.getItem('favoriteAlbums') || '[]');
+            favorites.forEach(albumId => {
+                const btn = document.querySelector(`[data-album-id="${albumId}"]`);
+                if (btn) {
+                    btn.classList.add('liked');
+                    btn.textContent = '❤️';
+                }
+            });
+        };
+
+        // Toggle favorito
+        const toggleFavorite = (event) => {
+            event.stopPropagation();
+            const btn = event.target;
+            const albumId = btn.getAttribute('data-album-id');
+            
+            let favorites = JSON.parse(localStorage.getItem('favoriteAlbums') || '[]');
+
+            if (btn.classList.contains('liked')) {
+                btn.classList.remove('liked');
+                btn.textContent = '🤍';
+                favorites = favorites.filter(id => id !== albumId);
+            } else {
+                btn.classList.add('liked');
+                btn.textContent = '❤️';
+                if (!favorites.includes(albumId)) {
+                    favorites.push(albumId);
+                }
+            }
+
+            localStorage.setItem('favoriteAlbums', JSON.stringify(favorites));
+        };
+
+        // Cargar favoritos cuando carga la página
+        document.addEventListener('DOMContentLoaded', loadFavorites);
+
+        // Carrusel
         const track = document.getElementById('carouselTrack');
         const container = document.getElementById('carouselContainer');
         const items = track.querySelectorAll('.carousel-item');
 
-        // Duplicar items para efecto infinito
-        items.forEach(item => {
+        // Duplicar items para efecto infinito (solo internamente, sin mostrar duplicados)
+        const itemsArray = Array.from(items);
+        itemsArray.forEach(item => {
             const clone = item.cloneNode(true);
             track.appendChild(clone);
         });
@@ -246,21 +418,13 @@
             track.classList.remove('paused');
         });
 
-        // Reiniciar animación al llegar al final (efecto infinito suave)
-        let animationIteration = 0;
-        const checkAnimation = setInterval(() => {
-            const trackWidth = track.offsetWidth;
-            const containerWidth = container.offsetWidth;
-            
-            // Cuando ha scrolleado la mitad, reiniciar de forma imperceptible
-            if (animationIteration % 2 === 1) {
-                track.style.animation = 'none';
-                setTimeout(() => {
-                    track.style.animation = 'scroll 40s linear infinite';
-                    animationIteration++;
-                }, 50);
-            }
-        }, 40000); // 40 segundos = duración de la animación
+        // Reiniciar animación suavemente al llegar al final
+        track.addEventListener('animationend', () => {
+            track.style.animation = 'none';
+            setTimeout(() => {
+                track.style.animation = 'scroll 40s linear infinite';
+            }, 50);
+        });
     </script>
 
 </body>
