@@ -280,12 +280,17 @@
             padding: 1.5rem;
          
 
-        body.dark-mode .carousel-content {
-            background: linear-gradient(135deg, #3d2b5c 0%, #2d1b4e 100%);
-        }   background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
+        .carousel-content {
+            flex: 1;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+
+        body.dark-mode .carousel-content {
+            background: linear-gradient(135deg, #1f1432 0%, #16102b 100%);
         }
 
         .carousel-title {
@@ -296,7 +301,8 @@
         }
 
         body.dark-mode .carousel-title {
-            color: #fde047;
+            color: #ffffff;
+            animation: textGlow 2s ease-in-out infinite;
         }
 
         .carousel-year {
@@ -306,7 +312,7 @@
         }
 
         body.dark-mode .carousel-year {
-            color: #fbbf24;
+            color: #e0e7ff;
         }
 
         .carousel-badge {
@@ -375,6 +381,18 @@
             }
             50% {
                 transform: translateY(-10px);
+            }
+        }
+
+        @keyframes textGlow {
+            0%, 100% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.5),
+                             0 0 10px rgba(168, 85, 247, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 15px rgba(255, 255, 255, 0.8),
+                             0 0 25px rgba(168, 85, 247, 0.6),
+                             0 0 35px rgba(236, 72, 153, 0.4);
             }
         }
 
