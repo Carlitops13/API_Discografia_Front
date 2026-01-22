@@ -158,7 +158,7 @@
                 transform: translateX(0);
             }
             100% {
-                transform: translateX(calc(-50% - 1rem));
+                transform: translateX(calc(-100% - 2rem));
             }
         }
 
@@ -296,7 +296,7 @@
         }
 
         body.dark-mode .carousel-title {
-            color: #f3e8ff;
+            color: #ffffff;
         }
 
         .carousel-year {
@@ -306,7 +306,7 @@
         }
 
         body.dark-mode .carousel-year {
-            color: #d1d5db;
+            color: #e5e7eb;
         }
 
         .carousel-badge {
@@ -434,37 +434,6 @@
                 <th:block th:each="album : ${listaAlbumes}">
                     <div class="carousel-item" th:data-name="${album.nombre}" th:data-genre="${album.genero}">
                         <div class="carousel-item-inner">
-                            <button class="favorite-btn" th:data-album-id="${album.id}" onclick="toggleFavorite(event)">
-                                🤍
-                            </button>
-                            <img th:src="${album.imagenUrl}" 
-                                 th:alt="${album.nombre}"
-                                 class="carousel-image"
-                                 loading="lazy">
-                            <div class="carousel-content">
-                                <div>
-                                    <div class="carousel-title" th:text="${album.nombre}">
-                                        Nombre del Álbum
-                                    </div>
-                                    <div class="carousel-year">
-                                        📅 <span th:text="${album.fechaLanzamiento}">2023</span>
-                                    </div>
-                                </div>
-                                <div class="carousel-badge" th:text="${album.genero}">
-                                    Pop
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </th:block>
-                
-                <!-- Segunda vuelta de álbumes (duplicado para efecto infinito) -->
-                <th:block th:each="album : ${listaAlbumes}">
-                    <div class="carousel-item" th:data-name="${album.nombre}" th:data-genre="${album.genero}">
-                        <div class="carousel-item-inner">
-                            <button class="favorite-btn" th:data-album-id="${album.id}" onclick="toggleFavorite(event)">
-                                🤍
-                            </button>
                             <img th:src="${album.imagenUrl}" 
                                  th:alt="${album.nombre}"
                                  class="carousel-image"
@@ -539,6 +508,8 @@
         // Carrusel
         const track = document.getElementById('carouselTrack');
         const container = document.getElementById('carouselContainer');
+        const items = Array.from(track.querySelectorAll('.carousel-item'));
+        const itemCount = items.length;
 
         // Pausar cuando el mouse entra
         container.addEventListener('mouseenter', () => {
@@ -551,11 +522,8 @@
         });
 
         // Reiniciar animación suavemente al llegar al final
-        track.addEventListener('animationend', () => {
-            track.style.animation = 'none';
-            setTimeout(() => {
-                track.style.animation = 'scroll 40s linear infinite';
-            }, 50);
+        track.addEventListener('animationiteration', () => {
+            // La animación se repite automáticamente
         });
 
         // Inicializar al cargar la página
