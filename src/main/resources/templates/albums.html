@@ -234,12 +234,16 @@
             justify-content: center;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             transition: all 0.3s ease;
-            z-index: 5;
+            z-index: 20;
         }
 
         .favorite-btn:hover {
             transform: scale(1.15);
             box-shadow: 0 6px 20px rgba(168, 85, 247, 0.3);
+        }
+
+        .favorite-btn:active {
+            transform: scale(0.95);
         }
 
         .favorite-btn.liked {
@@ -399,11 +403,13 @@
         // Carrusel
         const track = document.getElementById('carouselTrack');
         const container = document.getElementById('carouselContainer');
-        const items = track.querySelectorAll('.carousel-item');
+        const items = Array.from(track.querySelectorAll('.carousel-item'));
+        
+        // Cantidad de items originales
+        const originalItemCount = items.length;
 
-        // Duplicar items para efecto infinito (solo internamente, sin mostrar duplicados)
-        const itemsArray = Array.from(items);
-        itemsArray.forEach(item => {
+        // Duplicar items para efecto infinito
+        items.forEach(item => {
             const clone = item.cloneNode(true);
             track.appendChild(clone);
         });
